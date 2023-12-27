@@ -1,0 +1,61 @@
+body {
+    background-color: black;
+}
+
+#title {
+    margin-top: 3%;
+    margin-bottom: 2%;
+    text-align: center;
+    font-family: monospace;
+    color: white;
+}
+
+#settings {
+    width: 60vh;
+    display: flex;
+    margin: 0 auto;
+    font-family: monospace;
+}
+
+#wrapDifficulty {
+    align-self: center;
+    width: 50%;
+}
+
+#difficulty {
+    height: 2%;
+    margin-left: 2%;
+}
+
+#wrapMinecounter {
+    display: flex;
+    width: 50%;
+}
+
+#minecounterIcon {
+    height:3vh;
+    width: 3vh;
+    margin: 1vh;
+    align-self: center;
+}
+
+#minecounter {
+    color: white;
+}
+
+#wrapTimer {
+    display: flex;
+}
+
+#timer {
+    color: white;
+    margin-right: 2%;
+}
+
+#minefield {
+    width: 60vh;
+    height: 60vh;
+    background-color: grey;
+    display: flex;
+    margin: 0 auto;
+}

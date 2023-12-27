@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./sprites/red-flag.png">
 </head>
+
 <body>
-    
+    <h1 id="title">Minesweeper</h1>
+    <div id="settings">
+        <div id="wrapDifficulty">
+            <select id="difficulty">
+                <option value="1">easy</option>
+                <option value="2">medium</option>
+                <option value="3">hard</option>
+            </select>
+        </div>
+        <div id="wrapMinecounter">
+            <img id="minecounterIcon" src="./sprites/red-flag.png">
+            <h2 id="minecounter">99</h2>
+        </div>
+        <div id="wrapTime"><h2 id="timer">00:00</h2></div>
+    </div>
+    <div id="minefield">
+    </div>
+    <script src="script.js"></script>
 </body>
+
 </html>
