@@ -1,12 +1,12 @@
 body {
     background-color: black;
+    font-family: monospace;
 }
 
 #title {
     margin-top: 3%;
     margin-bottom: 2%;
     text-align: center;
-    font-family: monospace;
     color: white;
 }
 
@@ -14,7 +14,6 @@ body {
     width: 60vh;
     display: flex;
     margin: 0 auto;
-    font-family: monospace;
 }
 
 #wrapDifficulty {
@@ -25,6 +24,7 @@ body {
 #difficulty {
     height: 2%;
     margin-left: 2%;
+    cursor: pointer;
 }
 
 #wrapMinecounter {
@@ -53,9 +53,29 @@ body {
 }
 
 #minefield {
-    width: 60vh;
-    height: 60vh;
-    background-color: grey;
-    display: flex;
+    flex-wrap: wrap;
     margin: 0 auto;
+    display: grid;
+
+    --columnCount: 0;
+    --rowCount: 0;
+    --boxSize: 0;
+    --fieldSize: calc(var(--columnCount) * (var(--boxSize) + var(--borderSize)));
+    --borderSize: 1px;
+
+    grid-template-columns: repeat(var(--columnCount), calc(var(--boxSize) + var(--borderSize)));
+    grid-template-rows: repeat(var(--rowCount), calc(var(--boxSize) + var(--borderSize)));
+
+    height: var(--fieldSize);
+    width: var(--fieldSize);
+    background-color: grey;
+    border: 3px solid white;
+
+    cursor: pointer;
+}
+
+#minefield div {
+    background-image: url("./sprites/tile.png");
+    background-size: cover;
+    border: var(--borderSize) solid black;
 }
