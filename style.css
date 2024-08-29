@@ -75,7 +75,8 @@ body {
 }
 
 #minefield div {
-    background-image: url("./sprites/tile.png");
+    /* background-image: url("./sprites/tile.png"); */
     background-size: cover;
     border: var(--borderSize) solid black;
+    background-color: gray;
 }
