@@ -74,6 +74,9 @@ function onMouseDown(event) {
  * @param {object} event 
  */
 function onTileLeftClicked(event) {
+    const flag = event.currentTarget.hasFlag
+    if (flag) {return}
+    
     const id = event.currentTarget.id
     const hasMine = event.currentTarget.hasMine
     let tile = document.getElementById(id)
@@ -101,11 +104,11 @@ function onTileRightClicked(event) {
     let tile = document.getElementById(id)
 
     if (flag) {
-        flag = false
+        event.currentTarget.hasFlag = false
         tile.style.backgroundImage = ""
     }
-    if (!event.currentTarget.revealed && !flag) {
-        flag = true
+    if (!isRevealed && !flag) {
+        event.currentTarget.hasFlag = true
         tile.style.backgroundImage = "url('./sprites/red-flag.png')"
     }
 }
