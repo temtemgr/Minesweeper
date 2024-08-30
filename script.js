@@ -17,13 +17,24 @@ minefield.style.setProperty("--boxSize", boxSize + "px")
 window.onload = function () {
     setGrid(mines);
 };
+window.oncontextmenu = function (event) {
+    const id = event.target.id
+
+    if (id === 0 || id) {
+        event.preventDefault()
+        return false;     // cancel default menu
+    }
+}
 
 /**
  * Generates the minefield grid by creating divs in the minefiled div and giving them ids
+ * @param {Int} mines 
  */
 function setGrid(mines) {
     for (let i = 0; i < rowCount * columnCount; i++) {
         let tile = document.createElement("div");
+        tile.hasFlag = false;
+        tile.revealed = false;
 
         if (Math.round(Math.random() / 1.5) && mines) {
             tile.hasMine = true;
@@ -32,11 +43,10 @@ function setGrid(mines) {
         else {
             tile.hasMine = false;
         }
-
         tile.id = i.toString();
 
         tile.addEventListener("mousedown", (event) => {
-            onTileClicked(event)
+            onMouseDown(event)
         })
 
         minefield.appendChild(tile);
@@ -44,19 +54,58 @@ function setGrid(mines) {
 }
 
 /**
- * Eventlistener function
+ * Handles mouse down event
+ * @param {*} event 
  */
-function onTileClicked(event) {
+function onMouseDown(event) {
+    const btn = event.button;
+
+    if (btn === 0) {
+        onTileLeftClicked(event)
+    }
+    if (btn === 2) {
+        onTileRightClicked(event)
+    }
+}
+
+
+/**
+ * Handles left click event
+ * @param {object} event 
+ */
+function onTileLeftClicked(event) {
     const id = event.currentTarget.id
     const hasMine = event.currentTarget.hasMine
+    let tile = document.getElementById(id)
 
-    const tile = document.getElementById(id)
+    event.currentTarget.revealed = true
 
     if (hasMine) {
         tile.style.backgroundColor = "red"
         location.reload()
     }
     else {
-        tile.style.backgroundColor = "green"
+        tile.style.backgroundColor = "darkgrey"
+
+    }
+}
+
+/**
+ * Handles right click event
+ * @param {object} event 
+ */
+function onTileRightClicked(event) {
+    const id = event.currentTarget.id
+    const isRevealed = event.currentTarget.revealed
+    let flag = event.currentTarget.hasFlag
+    let tile = document.getElementById(id)
+
+    if (flag) {
+        flag = false
+        tile.style.backgroundImage = ""
+    }
+    if (!event.currentTarget.revealed && !flag) {
+        flag = true
+        tile.style.backgroundImage = "url('./sprites/red-flag.png')"
     }
 }
