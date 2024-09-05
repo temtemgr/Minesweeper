@@ -35,6 +35,7 @@ function setGrid(mines) {
         let tile = document.createElement("div");
         tile.hasFlag = false;
         tile.revealed = false;
+        tile.MineCounter = 0;
 
         if (Math.round(Math.random() / 1.5) && mines) {
             tile.hasMine = true;
@@ -50,6 +51,67 @@ function setGrid(mines) {
         })
 
         minefield.appendChild(tile);
+    }
+    setTileNumbers()
+    addTileNumberCSS()
+}
+
+function setTileNumbers() {
+    for (let i = 0; i < rowCount * columnCount; i++) {
+        const tile = document.getElementById(i);
+
+        if (tile.hasMine) {
+            AddMineCounter(i)
+        }
+    }
+}
+
+function AddMineCounter(tileID) {
+    const tiles = getSurroundingTiles(tileID);  
+    getTileIdsAroundTile(tileID).forEach((tile) => {
+        document.getElementById(tile).MineCounter + 1
+    });
+}
+
+const directions = [1, rowCount - 1, rowCount, rowCount + 1, -1, -rowCount - 1, -rowCount, -rowCount + 1];
+
+function getSurroundingTiles(tileID) {
+    const dirs = directions.slice();
+    if (tileID % 15 === 0) dirs.splice(1);
+    if (tileID % 14 === 0) dirs.splice(1);
+    const tiles = [];
+    dirs.forEach((dir) => {
+        const tile = document.getElementById(tileID + dir);
+        if (tile) tiles.push(tile);
+    });
+    return tiles;
+}
+
+function getTileIdsAroundTile(tileID) {
+    let tiles = [];
+
+    tiles.push(tileID - rowCount - 1);
+    tiles.push(tileID - rowCount);
+    tiles.push(tileID - rowCount + 1);
+    tiles.push(tileID - 1);
+    tiles.push(tileID + 1);
+    tiles.push(tileID + rowCount - 1);
+    tiles.push(tileID + rowCount);
+    tiles.push(tileID + rowCount + 1);
+
+    return tiles
+}
+
+function addTileNumberCSS() {
+    for (let i = 0; i < rowCount * columnCount; i++) {
+        let tile = document.getElementById(i);
+        const mineCounter = tile.MineCounter;
+
+        if (mineCounter !== 0) {
+            let text = document.createElement("p");
+            text.innerHTML = mineCounter;
+            tile.appendChild(text);
+        }
     }
 }
 
@@ -75,8 +137,8 @@ function onMouseDown(event) {
  */
 function onTileLeftClicked(event) {
     const flag = event.currentTarget.hasFlag
-    if (flag) {return}
-    
+    if (flag) { return }
+
     const id = event.currentTarget.id
     const hasMine = event.currentTarget.hasMine
     let tile = document.getElementById(id)
