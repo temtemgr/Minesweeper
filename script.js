@@ -2,7 +2,7 @@ const rowCount = 15
 const columnCount = 15
 const boxSize = 25
 
-const mines = 50
+const mines = 20
 
 let gamemode = "easy";
 
@@ -37,7 +37,7 @@ function setGrid(mines) {
         tile.revealed = false;
         tile.MineCounter = 0;
 
-        if (Math.round(Math.random() / 1.5) && mines) {
+        if (Math.round(Math.random() / 1.8) && mines) {
             tile.hasMine = true;
             mines--
         }
@@ -53,66 +53,121 @@ function setGrid(mines) {
         minefield.appendChild(tile);
     }
     setTileNumbers()
-    addTileNumberCSS()
 }
 
+/**
+ * Sets the tile numbers on the minefield
+ */
 function setTileNumbers() {
     for (let i = 0; i < rowCount * columnCount; i++) {
-        const tile = document.getElementById(i);
 
-        if (tile.hasMine) {
+        if (document.getElementById(i).hasMine) {
             AddMineCounter(i)
         }
     }
 }
 
+/**
+ * Sets Minecounter + 1 for the tiles around
+ * @param {Integer} tileID 
+ */
 function AddMineCounter(tileID) {
-    const tiles = getSurroundingTiles(tileID);  
     getTileIdsAroundTile(tileID).forEach((tile) => {
-        document.getElementById(tile).MineCounter + 1
+        document.getElementById(tile).MineCounter++
     });
 }
 
-const directions = [1, rowCount - 1, rowCount, rowCount + 1, -1, -rowCount - 1, -rowCount, -rowCount + 1];
-
-function getSurroundingTiles(tileID) {
-    const dirs = directions.slice();
-    if (tileID % 15 === 0) dirs.splice(1);
-    if (tileID % 14 === 0) dirs.splice(1);
-    const tiles = [];
-    dirs.forEach((dir) => {
-        const tile = document.getElementById(tileID + dir);
-        if (tile) tiles.push(tile);
-    });
-    return tiles;
-}
-
+/**
+ * Gets the tile ids around the tile
+ * @param {Integer} tileID 
+ * @returns {Array} of surrouded tile ids
+ */
 function getTileIdsAroundTile(tileID) {
     let tiles = [];
 
-    tiles.push(tileID - rowCount - 1);
-    tiles.push(tileID - rowCount);
-    tiles.push(tileID - rowCount + 1);
+    // top left corner
+    if (tileID == 0) {
+        tiles.push(tileID + 1);
+        tiles.push(tileID + columnCount);
+        tiles.push(tileID + columnCount + 1);
+
+        return tiles
+    }
+    // top right corner
+    if (tileID == (columnCount - 1)) {
+        tiles.push(tileID + columnCount);
+        tiles.push(tileID + columnCount - 1);
+        tiles.push(tileID - 1);
+
+        return tiles
+    }
+    // bottom right corner
+    if (tileID == ((rowCount * columnCount) - 1)) {
+        tiles.push(tileID - columnCount);
+        tiles.push(tileID - columnCount - 1);
+        tiles.push(tileID - 1);
+
+        return tiles
+    }
+    // bottom left corner
+    if (tileID == ((rowCount * columnCount) - columnCount - 1)) {
+        tiles.push(tileID - columnCount);
+        tiles.push(tileID - columnCount + 1);
+        tiles.push(tileID + 1);
+
+        return tiles
+    }
+    // left column
+    if (tileID % columnCount === 0) {
+        tiles.push(tileID - columnCount);
+        tiles.push(tileID - columnCount + 1);
+        tiles.push(tileID + 1);
+        tiles.push(tileID + columnCount);
+        tiles.push(tileID + columnCount + 1);
+
+        return tiles
+    }
+    // right column
+    if (tileID % (columnCount - 1) === 0) {
+        tiles.push(tileID - columnCount - 1);
+        tiles.push(tileID - columnCount);
+        tiles.push(tileID - 1);
+        tiles.push(tileID + columnCount - 1);
+        tiles.push(tileID + columnCount);
+
+        return tiles
+    }
+    // first row
+    if (tileID < columnCount) {
+        tiles.push(tileID - 1);
+        tiles.push(tileID + 1);
+        tiles.push(tileID + columnCount - 1);
+        tiles.push(tileID + columnCount);
+        tiles.push(tileID + columnCount + 1);
+
+        return tiles
+    }
+    // last row
+    if (tileID > ((columnCount * rowCount) - columnCount)) {
+        tiles.push(tileID - columnCount - 1);
+        tiles.push(tileID - columnCount);
+        tiles.push(tileID - columnCount + 1);
+        tiles.push(tileID - 1);
+        tiles.push(tileID + 1);
+
+        return tiles
+    }
+
+    tiles.push(tileID - columnCount - 1);
+    tiles.push(tileID - columnCount);
+    tiles.push(tileID - columnCount + 1);
     tiles.push(tileID - 1);
     tiles.push(tileID + 1);
-    tiles.push(tileID + rowCount - 1);
-    tiles.push(tileID + rowCount);
-    tiles.push(tileID + rowCount + 1);
+    tiles.push(tileID + columnCount - 1);
+    tiles.push(tileID + columnCount);
+    tiles.push(tileID + columnCount + 1);
 
     return tiles
-}
-
-function addTileNumberCSS() {
-    for (let i = 0; i < rowCount * columnCount; i++) {
-        let tile = document.getElementById(i);
-        const mineCounter = tile.MineCounter;
-
-        if (mineCounter !== 0) {
-            let text = document.createElement("p");
-            text.innerHTML = mineCounter;
-            tile.appendChild(text);
-        }
-    }
 }
 
 /**
@@ -141,18 +196,36 @@ function onTileLeftClicked(event) {
 
     const id = event.currentTarget.id
     const hasMine = event.currentTarget.hasMine
+    const mineCounter = event.currentTarget.MineCounter
+
     let tile = document.getElementById(id)
 
     event.currentTarget.revealed = true
 
     if (hasMine) {
         tile.style.backgroundColor = "red"
-        location.reload()
+        // location.reload()
     }
     else {
         tile.style.backgroundColor = "darkgrey"
-
     }
+
+    if (mineCounter) {
+        addTileNumberCSS(id, mineCounter)
+    }
+}
+
+/**
+ * Adds the number on the tile and the CSS
+ */
+function addTileNumberCSS(tileID, mineCounter) {
+        const tile = document.getElementById(tileID);
+
+        if (mineCounter !== 0 && !tile.hasMine) {
+            let text = document.createElement("p");
+            text.innerHTML = mineCounter;
+            tile.appendChild(text);
+        }
 }
 
 /**
