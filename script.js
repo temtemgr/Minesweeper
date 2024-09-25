@@ -128,7 +128,7 @@ function getTileIdsAroundTile(tileID) {
         return tiles
     }
     // right column
-    if (tileID % (columnCount - 1) === 0) {
+    if ((tileID + 1) % columnCount === 0) {
         tiles.push(tileID - columnCount - 1);
         tiles.push(tileID - columnCount);
         tiles.push(tileID - 1);
